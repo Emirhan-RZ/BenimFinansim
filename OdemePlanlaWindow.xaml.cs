@@ -20,7 +20,8 @@ namespace BenimFinansim
                 double miktar = double.Parse(txtMiktar.Text.Replace('.', ','));
                 int gun = int.Parse(txtGun.Text); // Ayın kaçıncı günü
 
-                using (var baglanti = new SqliteConnection("Data Source=finansim.db"))
+                // YENİ VE GÜVENLİ BAĞLANTI
+                using (var baglanti = new SqliteConnection(DatabaseManager.BaglantiCumlesi))
                 {
                     baglanti.Open();
                     var komut = baglanti.CreateCommand();

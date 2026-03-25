@@ -74,6 +74,7 @@ D:\c proje\BenimFinansim\obj\Debug\net8.0-windows\BenimFinansim.GeneratedMSBuild
 D:\c proje\BenimFinansim\obj\Debug\net8.0-windows\BenimFinansim.AssemblyInfoInputs.cache
 D:\c proje\BenimFinansim\obj\Debug\net8.0-windows\BenimFinansim.AssemblyInfo.cs
 D:\c proje\BenimFinansim\obj\Debug\net8.0-windows\BenimFinansim.csproj.CoreCompileInputs.cache
+D:\c proje\BenimFinansim\obj\Debug\net8.0-windows\BenimFinansim.sourcelink.json
 D:\c proje\BenimFinansim\obj\Debug\net8.0-windows\BenimFin.4EE51A1E.Up2Date
 D:\c proje\BenimFinansim\obj\Debug\net8.0-windows\BenimFinansim.dll
 D:\c proje\BenimFinansim\obj\Debug\net8.0-windows\refint\BenimFinansim.dll

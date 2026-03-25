@@ -8,8 +8,6 @@
         AllowsTransparency="True" 
         Background="Transparent">
 
-       
-    
     <Border Background="White" CornerRadius="10" BorderBrush="#E0E0E0" BorderThickness="1">
         <Grid>
             <Grid.ColumnDefinitions>
@@ -20,10 +18,13 @@
             <Border Grid.Column="0" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="0,0,1,0" CornerRadius="10,0,0,10">
                 <Grid Margin="10">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/> <RowDefinition Height="Auto"/> </Grid.RowDefinitions>
+                        <RowDefinition Height="*"/> 
+                        <RowDefinition Height="Auto"/> 
+                    </Grid.RowDefinitions>
 
                     <StackPanel Grid.Row="0">
                         <TextBlock Text="Benim Finansım" FontSize="22" FontWeight="Bold" Margin="10,20,10,40" Foreground="#F57C00"/>
+                        
                         <Button x:Name="btnGenelBakis" Content="Genel Bakış" Click="MenuGenelBakis_Click" Background="#E3F2FD" Foreground="#1976D2" BorderThickness="0" Padding="15,10" Margin="0,5" HorizontalContentAlignment="Left" FontWeight="SemiBold"/>
                         <Button x:Name="btnIslemler" Content="İşlemler" Click="MenuIslemler_Click" Background="Transparent" Foreground="#333333" BorderThickness="0" Padding="15,10" Margin="0,5" HorizontalContentAlignment="Left" FontWeight="Normal"/>
                         <Button x:Name="btnPlanlanmis" Content="Planlanmış Ödemeler" Click="MenuPlanlanmis_Click" Background="Transparent" Foreground="#333333" BorderThickness="0" Padding="15,10" Margin="0,5" HorizontalContentAlignment="Left" FontWeight="Normal"/>
@@ -197,16 +198,22 @@
                                                                 <ColumnDefinition Width="Auto"/>
                                                                 <ColumnDefinition Width="*"/>
                                                                 <ColumnDefinition Width="Auto"/>
+                                                                <ColumnDefinition Width="Auto"/>
                                                             </Grid.ColumnDefinitions>
+                                                            
                                                             <Ellipse Grid.Column="0" Width="40" Height="40" Fill="{Binding RenkBrush}" Margin="0,0,15,0"/>
+                                                            
                                                             <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                                                 <TextBlock Text="{Binding Baslik}" FontSize="14" Foreground="#333333" FontWeight="SemiBold"/>
                                                                 <TextBlock Text="{Binding Kategori}" FontSize="12" Foreground="#999999"/>
                                                             </StackPanel>
+                                                            
                                                             <StackPanel Grid.Column="2" VerticalAlignment="Center">
                                                                 <TextBlock Text="{Binding MiktarMetni}" Foreground="{Binding RenkBrush}" FontWeight="SemiBold" FontSize="14" HorizontalAlignment="Right"/>
                                                                 <TextBlock Text="{Binding Tarih}" FontSize="12" Foreground="#999999" HorizontalAlignment="Right"/>
                                                             </StackPanel>
+
+                                                            <Button Grid.Column="3" Content="✕" Tag="{Binding Id}" Click="BtnIslemSil_Click" Background="Transparent" BorderThickness="0" Foreground="#EF4444" FontSize="14" FontWeight="Bold" Cursor="Hand" Margin="10,0,0,0" ToolTip="İşlemi Sil"/>
                                                         </Grid>
                                                     </DataTemplate>
                                                 </ItemsControl.ItemTemplate>
@@ -262,7 +269,7 @@
                         </StackPanel>
                     </ScrollViewer>
 
-                  <Grid x:Name="pnlIslemler" Visibility="Collapsed" Margin="20">
+                    <Grid x:Name="pnlIslemler" Visibility="Collapsed" Margin="20">
                         <Border Background="White" CornerRadius="12" Padding="25" BorderBrush="#E2E8F0" BorderThickness="1">
                             <StackPanel>
                                 <Grid Margin="0,0,0,20">
@@ -309,7 +316,7 @@
                                 </Grid>
 
                                 <Rectangle Height="2" Fill="#F1F5F9" Margin="0,0,0,15" RadiusX="1" RadiusY="1"/>
-                                
+                               
                                 <DataGrid x:Name="dgIslemler" AutoGenerateColumns="False" IsReadOnly="True" 
                                           Background="White" RowHeight="45" HeadersVisibility="Column" 
                                           GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#F1F5F9" BorderThickness="0"
@@ -332,6 +339,13 @@
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <TextBlock Text="{Binding MiktarMetni}" Foreground="{Binding RenkBrush}" FontWeight="Bold" VerticalAlignment="Center"/>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        <DataGridTemplateColumn Width="50">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Button Content="🗑️" Tag="{Binding Id}" Click="BtnIslemSil_Click" Background="Transparent" BorderThickness="0" Foreground="#EF4444" FontSize="16" Cursor="Hand" ToolTip="Bu işlemi sil"/>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
@@ -425,11 +439,12 @@
                                 
                                 <Grid MinHeight="350">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="6*"/> <ColumnDefinition Width="4*"/> </Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="6*"/> 
+                                        <ColumnDefinition Width="4*"/> 
+                                    </Grid.ColumnDefinitions>
 
                                     <Grid Grid.Column="0" Margin="0,0,30,0">
                                         <lvc:PieChart Series="{Binding RaporSerisi}" Width="300" Height="300" InitialRotation="-90" LegendPosition="Hidden" Margin="10"/>
-                                        
                                         <TextBlock x:Name="txtRaporVeriYok" Text="Bu dönemde harcama bulunamadı." Foreground="#94A3B8" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="Collapsed"/>
                                     </Grid>
 
@@ -487,6 +502,7 @@
                                                         <ColumnDefinition Width="2*"/>   
                                                         <ColumnDefinition Width="2*"/>  
                                                         <ColumnDefinition Width="Auto"/> 
+                                                        <ColumnDefinition Width="Auto"/> 
                                                     </Grid.ColumnDefinitions>
                                                     
                                                     <TextBlock Grid.Column="0" Text="{Binding Ikon}" FontSize="32" VerticalAlignment="Center" Margin="0,0,20,0"/>
@@ -505,6 +521,8 @@
                                                         <TextBlock Text="{Binding ToplamDegerMetni}" FontWeight="Bold" FontSize="18" Foreground="#1E293B" HorizontalAlignment="Right"/>
                                                         <TextBlock Text="{Binding KarZararMetni}" FontWeight="Bold" FontSize="14" Foreground="{Binding KarZararRenk}" HorizontalAlignment="Right" Margin="0,4,0,0"/>
                                                     </StackPanel>
+
+                                                    <Button Grid.Column="4" Content="🗑️" Tag="{Binding Tur}" Click="BtnVarlikSil_Click" Background="Transparent" BorderThickness="0" Foreground="#EF4444" FontSize="18" Cursor="Hand" Margin="20,0,0,0" ToolTip="Bu varlığı tamamen sıfırla"/>
                                                 </Grid>
                                             </Border>
                                         </DataTemplate>
@@ -576,7 +594,6 @@
                                                             </StackPanel>
                                                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                                                                 <TextBlock Text="{Binding YuzdeMetni}" FontWeight="Bold" Foreground="{Binding RenkBrush}" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                                                                
                                                                 <Button Content="+" Tag="{Binding Id}" Click="HedefParaEkle_Click" Width="26" Height="26" Background="{Binding RenkBrush}" Foreground="White" FontWeight="Bold" Cursor="Hand" BorderThickness="0" ToolTip="Hızlı Para Aktar">
                                                                     <Button.Resources>
                                                                         <Style TargetType="Border"><Setter Property="CornerRadius" Value="13"/></Style>
@@ -631,8 +648,6 @@
                                             </Grid>
                                         </StackPanel>
                                     </Border>
-
-                                    
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="2">

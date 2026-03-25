@@ -46,8 +46,8 @@ namespace BenimFinansim
                     biriken = double.Parse(txtBiriken.Text.Replace('.', ','));
                 }
 
-                // Veritabanına kaydet
-                using (var baglanti = new SqliteConnection("Data Source=finansim.db"))
+                // Veritabanına kaydet (YENİ VE GÜVENLİ BAĞLANTI)
+                using (var baglanti = new SqliteConnection(DatabaseManager.BaglantiCumlesi))
                 {
                     baglanti.Open();
                     var komut = baglanti.CreateCommand();

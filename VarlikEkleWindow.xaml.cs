@@ -52,7 +52,8 @@ namespace BenimFinansim
                     miktar = -miktar;
                 }
 
-                using (var baglanti = new SqliteConnection("Data Source=finansim.db"))
+                // YENİ VE GÜVENLİ BAĞLANTI
+                using (var baglanti = new SqliteConnection(DatabaseManager.BaglantiCumlesi))
                 {
                     baglanti.Open();
                     var komut = baglanti.CreateCommand();

@@ -3,7 +3,7 @@
 ; Non-commercial use only
 
 #define MyAppName "Benim Finansım"
-#define MyAppVersion "1.0"
+#define MyAppVersion "1.0.1"
 #define MyAppPublisher "Emirhan Güçlü"
 #define MyAppURL "https://github.com/Emirhan-RZ/BenimFinansim"
 #define MyAppExeName "BenimFinansim.exe"
@@ -49,8 +49,8 @@ Name: "turkish"; MessagesFile: "compiler:Languages\Turkish.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "D:\c proje\BenimFinansim\bin\Release\net8.0-windows\win-x64\publish\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "D:\c proje\BenimFinansim\finansim.db"; DestDir: "{app}"; Flags: ignoreversion
+; İŞTE DÜZELTİLEN SATIR BURASI (win-x64 kısmı kaldırıldı):
+Source: "D:\c proje\BenimFinansim\bin\Release\net8.0-windows\publish\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 Source: "D:\c proje\BenimFinansim\finans.ico"; DestDir: "{app}"; Flags: ignoreversion
 
@@ -67,4 +67,3 @@ Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; IconFilen
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
-

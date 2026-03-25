@@ -1,18 +1,38 @@
 using Microsoft.Data.Sqlite;
+using System;
 using System.IO;
 
 namespace BenimFinansim
 {
     public class DatabaseManager
     {
-        // Veritabanı dosyamızın adı (Proje klasöründe otomatik oluşacak)
-        private static string dbName = "finansim.db";
+        // Veritabanının yolunu dinamik olarak bilgisayardaki güvenli AppData klasörüne kuruyoruz
+        private static string GetDbPath()
+        {
+            // C:\Users\Kullanici\AppData\Roaming klasörünü bulur
+            string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            
+            // Orada "BenimFinansim" adında bir klasör yolu oluşturur
+            string folderPath = Path.Combine(appData, "BenimFinansim");
+
+            // Eğer bu klasör bilgisayarda yoksa (ilk kez açılıyorsa) oluşturur
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+
+            // Tam dosya yolunu döner: ...\AppData\Roaming\BenimFinansim\finansim.db
+            return Path.Combine(folderPath, "finansim.db");
+        }
+
+        // Diğer sınıflardan bağlantı açarken kullanacağımız ortak bağlantı cümlesi
+        public static string BaglantiCumlesi => $"Data Source={GetDbPath()};";
 
         // Uygulama ilk açıldığında tabloları kuracak olan metod
         public static void VeritabaniniKur()
         {
-            // Bağlantıyı açıyoruz (Dosya yoksa kendisi sıfırdan oluşturur)
-            using (var baglanti = new SqliteConnection($"Data Source={dbName}"))
+            // Bağlantıyı yeni güvenli AppData yoluna göre açıyoruz
+            using (var baglanti = new SqliteConnection(BaglantiCumlesi))
             {
                 baglanti.Open();
 
