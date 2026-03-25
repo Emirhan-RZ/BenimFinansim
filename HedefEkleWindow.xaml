@@ -1,0 +1,183 @@
+<Window x:Class="BenimFinansim.HedefEkleWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Yeni Hedef / Borç Ekle" Height="480" Width="450"
+        WindowStartupLocation="CenterOwner" WindowStyle="None" AllowsTransparency="True" Background="Transparent"
+        FontFamily="Poppins, Segoe UI, sans-serif">
+
+    <Window.Resources>
+        <Style x:Key="GreenActionBtn" TargetType="Button">
+            <Setter Property="Background" Value="#10B981"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="12">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#059669"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="ComboBox">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="#1E293B"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <ToggleButton x:Name="ToggleButton" Focusable="false" IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border Background="White" BorderThickness="0" CornerRadius="8">
+                                            <Path x:Name="Arrow" Fill="#64748B" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,15,0" Data="M 0 0 L 5 5 L 10 0 Z"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+                            <ContentPresenter IsHitTestVisible="False" Content="{TemplateBinding SelectionBoxItem}" Margin="15,0,35,0" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                            
+                            <Popup x:Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="True" Focusable="False" PopupAnimation="Slide">
+                                <Border x:Name="DropDownBorder" Background="White" BorderThickness="1" BorderBrush="#CBD5E1" CornerRadius="8" Margin="0,4,0,0" MinWidth="{TemplateBinding ActualWidth}">
+                                    <ScrollViewer Margin="0,5" SnapsToDevicePixels="True">
+                                        <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" />
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="ComboBoxItem">
+            <Setter Property="Padding" Value="15,10"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground" Value="#1E293B"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBoxItem">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#F1F5F9"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Border Background="White" CornerRadius="15" Margin="20" BorderBrush="#E2E8F0" BorderThickness="1">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="15" ShadowDepth="3" Opacity="0.1" Direction="270" Color="Black"/>
+        </Border.Effect>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="65"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            
+            <Border Grid.Row="0" Background="Transparent" CornerRadius="15,15,0,0" MouseLeftButtonDown="Window_MouseDown">
+                <Grid>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="25,0,0,0">
+                        <TextBlock Text="🎯" FontSize="20" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                        <TextBlock Text="Hedef veya Borç Ekle" FontWeight="Bold" FontSize="16" Foreground="#1E293B" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    
+                    <Button Content="✕" Width="32" Height="32" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,20,0"
+                            Background="White" BorderThickness="1" BorderBrush="#E2E8F0" Foreground="#64748B" FontSize="14" FontWeight="Bold"
+                            Click="BtnClose_Click" Cursor="Hand">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="16">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                </Grid>
+            </Border>
+            <Rectangle Grid.Row="0" Height="1" Fill="#E2E8F0" VerticalAlignment="Bottom"/>
+
+            <StackPanel Grid.Row="1" Margin="30,20,30,25">
+                
+                <Grid Margin="0,0,0,15">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="15"/>
+                        <ColumnDefinition Width="80"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="Tür" FontSize="13" FontWeight="SemiBold" Foreground="#64748B" Margin="0,0,0,8"/>
+                        <Border Background="White" CornerRadius="8" BorderBrush="#CBD5E1" BorderThickness="1" Height="45">
+                            <ComboBox x:Name="cmbTur" SelectedIndex="0" VerticalContentAlignment="Center">
+                                <ComboBoxItem Content="Hedef (Birikim)"/>
+                                <ComboBoxItem Content="Borç (Ödeme)"/>
+                            </ComboBox>
+                        </Border>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="İkon" FontSize="13" FontWeight="SemiBold" Foreground="#64748B" Margin="0,0,0,8"/>
+                        <Border Background="White" CornerRadius="8" BorderBrush="#CBD5E1" BorderThickness="1" Height="45">
+                            <ComboBox x:Name="cmbIkon" FontSize="18" SelectedIndex="0" VerticalContentAlignment="Center">
+                                  <ComboBoxItem Content="🚗"/>
+                                <ComboBoxItem Content="​​🧥​"/>
+                                <ComboBoxItem Content="​🎁​"/>
+                                <ComboBoxItem Content="🏖️"/>
+                                <ComboBoxItem Content="💳"/>
+                                <ComboBoxItem Content="​🎉​"/>
+                            </ComboBox>
+                        </Border>
+                    </StackPanel>
+                </Grid>
+
+                <TextBlock Text="Başlık (Örn: Araba Peşinatı, Kredi Kartı)" FontSize="13" FontWeight="SemiBold" Foreground="#64748B" Margin="0,0,0,8"/>
+                <Border Background="White" CornerRadius="8" BorderBrush="#CBD5E1" BorderThickness="1" Height="45" Margin="0,0,0,15">
+                    <TextBox x:Name="txtBaslik" Background="Transparent" BorderThickness="0" FontSize="15" VerticalContentAlignment="Center" Margin="15,0" Foreground="#1E293B" FontWeight="SemiBold"/>
+                </Border>
+
+                <Grid Margin="0,0,0,25">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="15"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="Toplam Tutar (₺)" FontSize="13" FontWeight="SemiBold" Foreground="#64748B" Margin="0,0,0,8"/>
+                        <Border Background="White" CornerRadius="8" BorderBrush="#CBD5E1" BorderThickness="1" Height="45">
+                            <TextBox x:Name="txtToplam" Background="Transparent" BorderThickness="0" FontSize="15" VerticalContentAlignment="Center" Margin="15,0" Foreground="#1E293B" FontWeight="SemiBold"/>
+                        </Border>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="Şu Anki Durum (₺)" FontSize="13" FontWeight="SemiBold" Foreground="#64748B" Margin="0,0,0,8"/>
+                        <Border Background="White" CornerRadius="8" BorderBrush="#CBD5E1" BorderThickness="1" Height="45">
+                            <TextBox x:Name="txtBiriken" Background="Transparent" BorderThickness="0" FontSize="15" VerticalContentAlignment="Center" Margin="15,0" Foreground="#1E293B" FontWeight="SemiBold" ToolTip="Birikmiş veya ödenmiş miktar"/>
+                        </Border>
+                    </StackPanel>
+                </Grid>
+
+                <Button Content="Kaydet ve Ekle" Click="Kaydet_Click" Style="{StaticResource GreenActionBtn}" Height="48"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>
