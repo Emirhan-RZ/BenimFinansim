@@ -39,3 +39,8 @@ Kodları incelemek veya projeyi kendi ortamınızda derlemek isterseniz:
 1. Bu depoyu klonlayın:
    ```bash
    git clone [https://github.com/EmirhanGuclu/BenimFinansim.git](https://github.com/EmirhanGuclu/BenimFinansim.git)
+dotnet restore
+dotnet run
+
+👨‍💻 Geliştirici
+Emirhan Güçlü 🎓 İstanbul Kent Üniversitesi - Bilgisayar Programcılığı
