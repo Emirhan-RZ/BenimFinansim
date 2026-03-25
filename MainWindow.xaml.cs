@@ -10,7 +10,7 @@ using LiveChartsCore.SkiaSharpView.Painting;
 using SkiaSharp;
 using Microsoft.Data.Sqlite;
 using ClosedXML.Excel;
-using System.IO; // Yedekleme dosya yolları için eklendi
+using System.IO;
 
 namespace BenimFinansim
 {
@@ -45,7 +45,8 @@ namespace BenimFinansim
         public string Tur { get; set; } = string.Empty;
     }
 
-    public class ButceModel {
+    public class ButceModel
+    {
         public string Kategori { get; set; } = string.Empty;
         public string LimitMetni { get; set; } = string.Empty;
         public double Yuzde { get; set; }
@@ -53,7 +54,8 @@ namespace BenimFinansim
         public SolidColorBrush YaziRenkBrush { get; set; } = null!;
     }
 
-    public class HedefModel {
+    public class HedefModel
+    {
         public int Id { get; set; }
         public string Baslik { get; set; } = string.Empty;
         public string Ikon { get; set; } = string.Empty;
@@ -91,7 +93,7 @@ namespace BenimFinansim
         {
             InitializeComponent();
             DatabaseManager.VeritabaniniKur();
-            VerileriGuncelle(); 
+            VerileriGuncelle();
         }
 
         private double DbDenDegerGetir(SqliteConnection baglanti, string sqlSorgusu)
@@ -113,9 +115,9 @@ namespace BenimFinansim
                     double toplamGelir = DbDenDegerGetir(baglanti, "SELECT SUM(Miktar) FROM Islemler WHERE Tip='Gelir'");
                     double toplamGider = DbDenDegerGetir(baglanti, "SELECT SUM(Miktar) FROM Islemler WHERE Tip='Gider'");
                     double tlBakiye = toplamGelir - toplamGider;
-                    
-                    if(txtAnaBakiye != null) txtAnaBakiye.Text = $"₺{tlBakiye:N2}";
-                    if(txtCuzdan != null) txtCuzdan.Text = $"₺{tlBakiye:N2}";
+
+                    if (txtAnaBakiye != null) txtAnaBakiye.Text = $"₺{tlBakiye:N2}";
+                    if (txtCuzdan != null) txtCuzdan.Text = $"₺{tlBakiye:N2}";
 
                     double usdKuru = await KurServisi.KuruGetir("USD");
                     double eurKuru = await KurServisi.KuruGetir("EUR");
@@ -131,7 +133,7 @@ namespace BenimFinansim
                     if (txtEuroKur != null) txtEuroKur.Text = $"(₺{eurKuru:N2})";
                     if (txtAltinKur != null) txtAltinKur.Text = $"(₺{altinKuru:N2})";
                     if (txtGumusKur != null) txtGumusKur.Text = $"(₺{gumusKuru:N2})";
-                    
+
                     if (txtDolarVarlik != null) txtDolarVarlik.Text = $"${usdMiktar:N2}";
                     if (txtEuroVarlik != null) txtEuroVarlik.Text = $"€{eurMiktar:N2}";
                     if (txtAltinVarlik != null) txtAltinVarlik.Text = $"{gldMiktar:N2}g";
@@ -163,14 +165,14 @@ namespace BenimFinansim
                     if (txtBuAyYuzde != null) txtBuAyYuzde.Text = $"%{Math.Round(buAyHarcamaYuzdesi)}";
                     if (txtGecenAyYuzde != null) txtGecenAyYuzde.Text = $"%{Math.Round(gecenAyHarcamaYuzdesi)}";
 
-                    BuAySerisi = (buAyGelir == 0 && buAyGider == 0) 
+                    BuAySerisi = (buAyGelir == 0 && buAyGider == 0)
                         ? new ISeries[] { new PieSeries<double> { Values = new double[] { 1 }, Fill = new SolidColorPaint(SKColor.Parse("#E0E0E0")), InnerRadius = 25 } }
                         : new ISeries[] {
                             new PieSeries<double> { Values = new double[] { buAyGelir }, Fill = new SolidColorPaint(SKColor.Parse("#4CAF50")), InnerRadius=25 },
                             new PieSeries<double> { Values = new double[] { buAyGider }, Fill = new SolidColorPaint(SKColor.Parse("#F44336")), InnerRadius=25 }
                         };
 
-                    GecenAySerisi = (gecenAyGelir == 0 && gecenAyGider == 0) 
+                    GecenAySerisi = (gecenAyGelir == 0 && gecenAyGider == 0)
                         ? new ISeries[] { new PieSeries<double> { Values = new double[] { 1 }, Fill = new SolidColorPaint(SKColor.Parse("#E0E0E0")), InnerRadius = 25 } }
                         : new ISeries[] {
                             new PieSeries<double> { Values = new double[] { gecenAyGelir }, Fill = new SolidColorPaint(SKColor.Parse("#4CAF50")), InnerRadius=25 },
@@ -181,7 +183,7 @@ namespace BenimFinansim
                     double[] yediGunGelir = new double[7];
                     double[] yediGunGider = new double[7];
                     double[] yediGunBakiye = new double[7];
-                    double geciciBakiye = tlBakiye; 
+                    double geciciBakiye = tlBakiye;
 
                     for (int i = 6; i >= 0; i--)
                     {
@@ -192,7 +194,8 @@ namespace BenimFinansim
                         yediGunGider[6 - i] = DbDenDegerGetir(baglanti, $"SELECT SUM(Miktar) FROM Islemler WHERE Tip='Gider' AND Tarih='{formatliTarih}'");
                     }
 
-                    for (int i = 6; i >= 0; i--) {
+                    for (int i = 6; i >= 0; i--)
+                    {
                         yediGunBakiye[i] = geciciBakiye;
                         geciciBakiye = geciciBakiye - yediGunGelir[i] + yediGunGider[i];
                     }
@@ -201,29 +204,42 @@ namespace BenimFinansim
                         new ColumnSeries<double> { Name = "Gider", Values = yediGunGider, Fill = new SolidColorPaint(SKColor.Parse("#F44336")), MaxBarWidth=25, Padding=2 },
                         new ColumnSeries<double> { Name = "Gelir", Values = yediGunGelir, Fill = new SolidColorPaint(SKColor.Parse("#4CAF50")), MaxBarWidth=25, Padding=2 }
                     };
-                    Son7GunEkseni = new Axis[] { new Axis { Labels = gunIsimleri, LabelsPaint = new SolidColorPaint(SKColor.Parse("#666666")), TextSize=12 } };
+                    Son7GunEkseni = new Axis[] { new Axis { Labels = gunIsimleri, LabelsPaint = new SolidColorPaint(SKColor.Parse("#666666")), TextSize = 12 } };
+
+                    BakiyeSerisi = new ISeries[]
+                    {
+                        new LineSeries<double>
+                        {
+                            Values = yediGunBakiye,
+                            Name = "Toplam Bakiye",
+                            Fill = null,
+                            GeometrySize = 10,
+                            Stroke = new SolidColorPaint(SKColors.DeepSkyBlue) { StrokeThickness = 4 }
+                        }
+                    };
 
                     var islemListesi = new List<IslemModel>();
                     var listKomut = baglanti.CreateCommand();
                     listKomut.CommandText = "SELECT Id, Baslik, Kategori, Miktar, Tip, Tarih FROM Islemler ORDER BY Tarih DESC, Id DESC LIMIT 4";
-                    
+
                     using (var okuyucu = listKomut.ExecuteReader())
                     {
                         while (okuyucu.Read())
                         {
                             bool isGelir = okuyucu.GetString(4) == "Gelir";
-                            islemListesi.Add(new IslemModel {
+                            islemListesi.Add(new IslemModel
+                            {
                                 Id = okuyucu.GetInt32(0),
                                 Baslik = okuyucu.GetString(1),
                                 Kategori = okuyucu.GetString(2),
                                 Tarih = Convert.ToDateTime(okuyucu.GetString(5)).ToString("dd.MM.yyyy"),
                                 MiktarMetni = isGelir ? $"+₺{okuyucu.GetDouble(3):N2}" : $"-₺{okuyucu.GetDouble(3):N2}",
-                                RenkBrush = isGelir ? new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(76, 175, 80)) : new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(244, 67, 54))
+                                RenkBrush = isGelir ? new SolidColorBrush(Color.FromRgb(76, 175, 80)) : new SolidColorBrush(Color.FromRgb(244, 67, 54))
                             });
                         }
                     }
-                    if(lstSonIslemler != null) lstSonIslemler.ItemsSource = islemListesi;
-                    if(txtIslemYok != null) txtIslemYok.Visibility = islemListesi.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+                    if (lstSonIslemler != null) lstSonIslemler.ItemsSource = islemListesi;
+                    if (txtIslemYok != null) txtIslemYok.Visibility = islemListesi.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
                 }
 
                 DataContext = null;
@@ -248,7 +264,7 @@ namespace BenimFinansim
             IslemEkleWindow pencere = new IslemEkleWindow("Gelir");
             pencere.Owner = this;
             pencere.ShowDialog();
-            VerileriGuncelle(); 
+            VerileriGuncelle();
         }
 
         public void GiderEkle_Click(object sender, RoutedEventArgs e)
@@ -256,7 +272,7 @@ namespace BenimFinansim
             IslemEkleWindow pencere = new IslemEkleWindow("Gider");
             pencere.Owner = this;
             pencere.ShowDialog();
-            VerileriGuncelle(); 
+            VerileriGuncelle();
         }
 
         private void MenuButonlariniSifirla()
@@ -282,12 +298,12 @@ namespace BenimFinansim
             pnlPlanlanmis.Visibility = Visibility.Collapsed;
             pnlRaporlar.Visibility = Visibility.Collapsed;
             pnlPortfoy.Visibility = Visibility.Collapsed;
-            if(pnlButce != null) pnlButce.Visibility = Visibility.Collapsed;
-            if(pnlAyarlar != null) pnlAyarlar.Visibility = Visibility.Collapsed;
+            if (pnlButce != null) pnlButce.Visibility = Visibility.Collapsed;
+            if (pnlAyarlar != null) pnlAyarlar.Visibility = Visibility.Collapsed;
 
             pnlGenelBakis.Visibility = Visibility.Visible;
-            
-            VerileriGuncelle(); 
+
+            VerileriGuncelle();
 
             MenuButonlariniSifirla();
             btnGenelBakis.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E3F2FD"));
@@ -302,12 +318,12 @@ namespace BenimFinansim
             pnlPlanlanmis.Visibility = Visibility.Collapsed;
             pnlRaporlar.Visibility = Visibility.Collapsed;
             pnlPortfoy.Visibility = Visibility.Collapsed;
-            if(pnlButce != null) pnlButce.Visibility = Visibility.Collapsed;
-            if(pnlAyarlar != null) pnlAyarlar.Visibility = Visibility.Collapsed;
-            
+            if (pnlButce != null) pnlButce.Visibility = Visibility.Collapsed;
+            if (pnlAyarlar != null) pnlAyarlar.Visibility = Visibility.Collapsed;
+
             pnlIslemler.Visibility = Visibility.Visible;
-            
-            TumIslemleriYukle(); 
+
+            TumIslemleriYukle();
 
             MenuButonlariniSifirla();
             btnIslemler.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E3F2FD"));
@@ -322,11 +338,11 @@ namespace BenimFinansim
             pnlIslemler.Visibility = Visibility.Collapsed;
             pnlRaporlar.Visibility = Visibility.Collapsed;
             pnlPortfoy.Visibility = Visibility.Collapsed;
-            if(pnlButce != null) pnlButce.Visibility = Visibility.Collapsed;
-            if(pnlAyarlar != null) pnlAyarlar.Visibility = Visibility.Collapsed;
+            if (pnlButce != null) pnlButce.Visibility = Visibility.Collapsed;
+            if (pnlAyarlar != null) pnlAyarlar.Visibility = Visibility.Collapsed;
 
             pnlPlanlanmis.Visibility = Visibility.Visible;
-            
+
             PlanlanmisOdemeleriYukle();
 
             MenuButonlariniSifirla();
@@ -342,17 +358,17 @@ namespace BenimFinansim
             pnlIslemler.Visibility = Visibility.Collapsed;
             pnlPlanlanmis.Visibility = Visibility.Collapsed;
             pnlPortfoy.Visibility = Visibility.Collapsed;
-            if(pnlButce != null) pnlButce.Visibility = Visibility.Collapsed;
-            if(pnlAyarlar != null) pnlAyarlar.Visibility = Visibility.Collapsed;
-            
+            if (pnlButce != null) pnlButce.Visibility = Visibility.Collapsed;
+            if (pnlAyarlar != null) pnlAyarlar.Visibility = Visibility.Collapsed;
+
             pnlRaporlar.Visibility = Visibility.Visible;
-            
+
             MenuButonlariniSifirla();
             btnRaporlar.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E3F2FD"));
             btnRaporlar.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1976D2"));
             btnRaporlar.FontWeight = FontWeights.SemiBold;
 
-            RaporlariYukle(); 
+            RaporlariYukle();
         }
 
         private void MenuPortfoy_Click(object sender, RoutedEventArgs e)
@@ -362,17 +378,17 @@ namespace BenimFinansim
             pnlIslemler.Visibility = Visibility.Collapsed;
             pnlPlanlanmis.Visibility = Visibility.Collapsed;
             pnlRaporlar.Visibility = Visibility.Collapsed;
-            if(pnlButce != null) pnlButce.Visibility = Visibility.Collapsed;
-            if(pnlAyarlar != null) pnlAyarlar.Visibility = Visibility.Collapsed;
-            
+            if (pnlButce != null) pnlButce.Visibility = Visibility.Collapsed;
+            if (pnlAyarlar != null) pnlAyarlar.Visibility = Visibility.Collapsed;
+
             pnlPortfoy.Visibility = Visibility.Visible;
-            
+
             MenuButonlariniSifirla();
             btnPortfoy.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E3F2FD"));
             btnPortfoy.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1976D2"));
             btnPortfoy.FontWeight = FontWeights.SemiBold;
 
-            PortfoyYukle(); 
+            PortfoyYukle();
         }
 
         private void MenuButce_Click(object sender, RoutedEventArgs e)
@@ -383,10 +399,10 @@ namespace BenimFinansim
             pnlPlanlanmis.Visibility = Visibility.Collapsed;
             pnlRaporlar.Visibility = Visibility.Collapsed;
             pnlPortfoy.Visibility = Visibility.Collapsed;
-            if(pnlAyarlar != null) pnlAyarlar.Visibility = Visibility.Collapsed;
-            
+            if (pnlAyarlar != null) pnlAyarlar.Visibility = Visibility.Collapsed;
+
             pnlButce.Visibility = Visibility.Visible;
-            
+
             MenuButonlariniSifirla();
             btnButce.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E3F2FD"));
             btnButce.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1976D2"));
@@ -404,9 +420,9 @@ namespace BenimFinansim
             pnlRaporlar.Visibility = Visibility.Collapsed;
             pnlPortfoy.Visibility = Visibility.Collapsed;
             pnlButce.Visibility = Visibility.Collapsed;
-            
+
             pnlAyarlar.Visibility = Visibility.Visible;
-            
+
             MenuButonlariniSifirla();
             btnAyarlar.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E3F2FD"));
             btnAyarlar.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1976D2"));
@@ -426,44 +442,45 @@ namespace BenimFinansim
                 {
                     baglanti.Open();
                     var islemListesi = new List<IslemModel>();
-                    
+
                     string sorgu = "SELECT Id, Baslik, Kategori, Miktar, Tip, Tarih FROM Islemler WHERE 1=1 ";
-                    
+
                     if (seciliFiltre == 1) sorgu += "AND Tip = 'Gelir' ";
                     else if (seciliFiltre == 2) sorgu += "AND Tip = 'Gider' ";
-                    
+
                     if (!string.IsNullOrEmpty(aramaMetni))
                     {
                         sorgu += "AND (LOWER(Baslik) LIKE @arama OR LOWER(Kategori) LIKE @arama) ";
                     }
-                    
+
                     sorgu += "ORDER BY Tarih DESC, Id DESC";
 
                     var komut = baglanti.CreateCommand();
                     komut.CommandText = sorgu;
-                    
+
                     if (!string.IsNullOrEmpty(aramaMetni))
                     {
                         komut.Parameters.AddWithValue("@arama", $"%{aramaMetni}%");
                     }
-                    
+
                     using (var okuyucu = komut.ExecuteReader())
                     {
                         while (okuyucu.Read())
                         {
                             bool isGelir = okuyucu.GetString(4) == "Gelir";
-                            islemListesi.Add(new IslemModel {
+                            islemListesi.Add(new IslemModel
+                            {
                                 Id = okuyucu.GetInt32(0),
                                 Baslik = okuyucu.GetString(1),
                                 Kategori = okuyucu.GetString(2),
                                 Tarih = Convert.ToDateTime(okuyucu.GetString(5)).ToString("dd.MM.yyyy"),
                                 MiktarMetni = isGelir ? $"+₺{okuyucu.GetDouble(3):N2}" : $"-₺{okuyucu.GetDouble(3):N2}",
-                                RenkBrush = isGelir ? new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(16, 185, 129)) : new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(239, 68, 68))
+                                RenkBrush = isGelir ? new SolidColorBrush(Color.FromRgb(16, 185, 129)) : new SolidColorBrush(Color.FromRgb(239, 68, 68))
                             });
                         }
                     }
-                    
-                    if(dgIslemler != null) 
+
+                    if (dgIslemler != null)
                     {
                         dgIslemler.ItemsSource = islemListesi;
                         if (txtFiltreSonucYok != null)
@@ -484,7 +501,6 @@ namespace BenimFinansim
             TumIslemleriYukle();
         }
 
-        // --- YENİ EKLENEN: SİL BUTONU İŞLEVİ ---
         private void BtnIslemSil_Click(object sender, RoutedEventArgs e)
         {
             Button btn = (Button)sender;
@@ -505,9 +521,8 @@ namespace BenimFinansim
                             komut.Parameters.AddWithValue("@id", silinecekId);
                             komut.ExecuteNonQuery();
                         }
-                        
-                        // Ekrandaki verileri yenile
-                        VerileriGuncelle(); 
+
+                        VerileriGuncelle();
                         TumIslemleriYukle();
                     }
                     catch (Exception ex) { MessageBox.Show("Silme işlemi sırasında hata oluştu: " + ex.Message); }
@@ -534,19 +549,20 @@ namespace BenimFinansim
 
                     var liste = new List<IslemModel>();
                     double toplamPlanlananGider = 0;
-                    
+
                     var komut = baglanti.CreateCommand();
                     komut.CommandText = "SELECT Id, Baslik, Miktar, OdemeGunu, Kategori FROM PlanlanmisOdemeler ORDER BY OdemeGunu ASC";
-                    
+
                     using (var okuyucu = komut.ExecuteReader())
                     {
                         while (okuyucu.Read())
                         {
                             int id = okuyucu.GetInt32(0);
                             double miktar = okuyucu.GetDouble(2);
-                            toplamPlanlananGider += miktar; 
-                            
-                            liste.Add(new IslemModel {
+                            toplamPlanlananGider += miktar;
+
+                            liste.Add(new IslemModel
+                            {
                                 Id = id,
                                 Baslik = okuyucu.GetString(1),
                                 Tarih = $"Her ayın {okuyucu.GetInt32(3)}'i",
@@ -555,7 +571,7 @@ namespace BenimFinansim
                             });
                         }
                     }
-                    
+
                     if (lstPlanlanmisOdemeler != null) lstPlanlanmisOdemeler.ItemsSource = liste;
                     if (txtPlanlananToplam != null) txtPlanlananToplam.Text = $"₺{toplamPlanlananGider:N2}";
                     if (txtPlanlananKalan != null) txtPlanlananKalan.Text = $"₺{(tlBakiye - toplamPlanlananGider):N2}";
@@ -601,9 +617,9 @@ namespace BenimFinansim
             if (cmbRaporDonem == null || lstRaporKategori == null) return;
             ComboBoxItem seciliItem = (ComboBoxItem)cmbRaporDonem.SelectedItem;
             if (seciliItem == null) return;
-            
-            string secilenDonem = seciliItem.Content.ToString() ?? "Bu Ay";
-            
+
+            string secilenDonem = seciliItem.Content?.ToString() ?? "Bu Ay";
+
             DateTime simdi = DateTime.Now;
             string baslangicTarihi = "";
             string bitisTarihi = "";
@@ -631,17 +647,17 @@ namespace BenimFinansim
                 {
                     baglanti.Open();
                     var komut = baglanti.CreateCommand();
-                    
+
                     komut.CommandText = @"SELECT Kategori, SUM(Miktar) 
                                          FROM Islemler 
                                          WHERE Tip = 'Gider' 
                                          AND Tarih BETWEEN @bas AND @bit 
                                          GROUP BY Kategori 
                                          ORDER BY SUM(Miktar) DESC";
-                    
+
                     komut.Parameters.AddWithValue("@bas", baslangicTarihi);
                     komut.Parameters.AddWithValue("@bit", bitisTarihi);
-                    
+
                     var kategoriListesi = new List<KategoriRaporModel>();
                     string[] renkler = { "#3B82F6", "#EF4444", "#F59E0B", "#10B981", "#8B5CF6", "#EC4899", "#14B8A6" };
                     int renkIndex = 0;
@@ -658,20 +674,22 @@ namespace BenimFinansim
                             string hexRenk = renkler[renkIndex % renkler.Length];
                             var firca = new SolidColorBrush((Color)ColorConverter.ConvertFromString(hexRenk));
 
-                            kategoriListesi.Add(new KategoriRaporModel { 
-                                KategoriAdi = kategoriAdi, 
-                                Tutar = miktar, 
-                                TutarMetni = $"-₺{miktar:N2}", 
-                                RenkBrush = firca 
+                            kategoriListesi.Add(new KategoriRaporModel
+                            {
+                                KategoriAdi = kategoriAdi,
+                                Tutar = miktar,
+                                TutarMetni = $"-₺{miktar:N2}",
+                                RenkBrush = firca
                             });
 
-                            RaporSerisi.Add(new PieSeries<double> { 
-                                Values = new double[] { miktar }, 
-                                Name = kategoriAdi, 
-                                Fill = new SolidColorPaint(SKColor.Parse(hexRenk)), 
-                                InnerRadius = 50, 
-                                Pushout = 3, 
-                                HoverPushout = 10 
+                            RaporSerisi.Add(new PieSeries<double>
+                            {
+                                Values = new double[] { miktar },
+                                Name = kategoriAdi,
+                                Fill = new SolidColorPaint(SKColor.Parse(hexRenk)),
+                                InnerRadius = 50,
+                                Pushout = 3,
+                                HoverPushout = 10
                             });
                             renkIndex++;
                         }
@@ -680,11 +698,11 @@ namespace BenimFinansim
                     if (txtRaporVeriYok != null)
                         txtRaporVeriYok.Visibility = (RaporSerisi.Count == 0) ? Visibility.Visible : Visibility.Collapsed;
 
-                    if (RaporSerisi.Count == 0) 
+                    if (RaporSerisi.Count == 0)
                     {
                         RaporSerisi.Add(new PieSeries<double> { Values = new double[] { 1 }, Fill = new SolidColorPaint(SKColor.Parse("#F1F5F9")), InnerRadius = 50, HoverPushout = 0 });
                     }
-                    
+
                     lstRaporKategori.ItemsSource = kategoriListesi;
                 }
             }
@@ -726,11 +744,11 @@ namespace BenimFinansim
                 double altinKuru = await KurServisi.MadenGetir("gram-altin");
                 double gumusKuru = await KurServisi.MadenGetir("gumus");
 
-                using (var baglanti = new Microsoft.Data.Sqlite.SqliteConnection(DatabaseManager.BaglantiCumlesi))
+                using (var baglanti = new SqliteConnection(DatabaseManager.BaglantiCumlesi))
                 {
                     baglanti.Open();
                     var komut = baglanti.CreateCommand();
-                    
+
                     komut.CommandText = @"
                         SELECT 
                             Tur, 
@@ -771,15 +789,15 @@ namespace BenimFinansim
 
                             genelToplamKarZarar += karZararTL;
 
-                            SolidColorBrush renk = karZararTL >= 0 
-                                ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#10B981")) 
-                                : new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EF4444")); 
-                                
+                            SolidColorBrush renk = karZararTL >= 0
+                                ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#10B981"))
+                                : new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EF4444"));
+
                             string isaret = karZararTL >= 0 ? "+" : "";
 
                             portfoyListesi.Add(new VarlikPortfoyModel
                             {
-                                Tur = tur, // YENİ EKLENDİ: Silme butonu bu sayede neyi sileceğini anlayacak!
+                                Tur = tur,
                                 Ikon = ikon,
                                 VarlikAdi = isim,
                                 MiktarMetni = $"{miktar:N2} {birim}",
@@ -793,13 +811,13 @@ namespace BenimFinansim
                     }
 
                     if (lstPortfoy != null) lstPortfoy.ItemsSource = portfoyListesi;
-                    
+
                     if (txtToplamKarZarar != null)
                     {
                         string genelIsaret = genelToplamKarZarar >= 0 ? "+" : "";
                         txtToplamKarZarar.Text = $"{genelIsaret}₺{genelToplamKarZarar:N2}";
-                        txtToplamKarZarar.Foreground = genelToplamKarZarar >= 0 
-                            ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#10B981")) 
+                        txtToplamKarZarar.Foreground = genelToplamKarZarar >= 0
+                            ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#10B981"))
                             : new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EF4444"));
                     }
                 }
@@ -835,8 +853,12 @@ namespace BenimFinansim
                             double yuzde = (biriken / toplam) * 100;
                             if (yuzde > 100) yuzde = 100;
 
-                            hedefListesi.Add(new HedefModel {
-                                Id = id, Baslik = baslik, Ikon = ikon, Yuzde = yuzde,
+                            hedefListesi.Add(new HedefModel
+                            {
+                                Id = id,
+                                Baslik = baslik,
+                                Ikon = ikon,
+                                Yuzde = yuzde,
                                 YuzdeMetni = $"%{Math.Round(yuzde)}",
                                 OzetMetni = isBorc ? $"Kalan: ₺{(toplam - biriken):N0} / Toplam: ₺{toplam:N0}" : $"Biriken: ₺{biriken:N0} / Hedef: ₺{toplam:N0}",
                                 RenkBrush = isBorc ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E11D48")) : new SolidColorBrush((Color)ColorConverter.ConvertFromString("#10B981")),
@@ -860,11 +882,12 @@ namespace BenimFinansim
                             double limit = reader.GetDouble(1);
 
                             double harcanan = DbDenDegerGetir(baglanti, $"SELECT SUM(Miktar) FROM Islemler WHERE Tip='Gider' AND Kategori='{kategori}' AND strftime('%Y-%m', Tarih) = '{buAy}'");
-                            
+
                             double yuzde = (harcanan / limit) * 100;
                             bool tehlike = yuzde >= 85;
 
-                            butceListesi.Add(new ButceModel {
+                            butceListesi.Add(new ButceModel
+                            {
                                 Kategori = kategori,
                                 Yuzde = yuzde > 100 ? 100 : yuzde,
                                 LimitMetni = $"₺{harcanan:N0} / ₺{limit:N0}",
@@ -879,20 +902,85 @@ namespace BenimFinansim
             catch (Exception ex) { Console.WriteLine("Bütçe Hata: " + ex.Message); }
         }
 
+        // EKSİK OLAN BÜTÇE SİLME METODU
+        private void BtnButceSil_Click(object sender, RoutedEventArgs e)
+        {
+            Button btn = (Button)sender;
+            if (btn.Tag != null)
+            {
+                string kategoriAdi = btn.Tag.ToString();
+                var cevap = MessageBox.Show($"'{kategoriAdi}' kategorisi için tanımlanmış bütçeyi silmek istediğinize emin misiniz?", "Bütçe Silme", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+
+                if (cevap == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        using (var baglanti = new SqliteConnection(DatabaseManager.BaglantiCumlesi))
+                        {
+                            baglanti.Open();
+                            var komut = baglanti.CreateCommand();
+                            komut.CommandText = "DELETE FROM Butceler WHERE Kategori = @kategori";
+                            komut.Parameters.AddWithValue("@kategori", kategoriAdi);
+                            komut.ExecuteNonQuery();
+                        }
+
+                        ButceVeHedefleriYukle();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Bütçe silinirken hata oluştu: " + ex.Message);
+                    }
+                }
+            }
+        }
+
+        // EKSİK OLAN HEDEF SİLME METODU
+        private void BtnHedefSil_Click(object sender, RoutedEventArgs e)
+        {
+            Button btn = (Button)sender;
+            if (btn.Tag != null)
+            {
+                int hedefId = (int)btn.Tag;
+                var cevap = MessageBox.Show("Bu hedefi/birikimi kalıcı olarak silmek istediğinize emin misiniz?", "Hedef Silme", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+
+                if (cevap == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        using (var baglanti = new SqliteConnection(DatabaseManager.BaglantiCumlesi))
+                        {
+                            baglanti.Open();
+                            var komut = baglanti.CreateCommand();
+                            komut.CommandText = "DELETE FROM Hedefler WHERE Id = @id";
+                            komut.Parameters.AddWithValue("@id", hedefId);
+                            komut.ExecuteNonQuery();
+                        }
+
+                        ButceVeHedefleriYukle();
+                        VerileriGuncelle();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Hedef silinirken hata oluştu: " + ex.Message);
+                    }
+                }
+            }
+        }
+
         private void HedefParaEkle_Click(object sender, RoutedEventArgs e)
         {
             Button btn = (Button)sender;
             if (btn.Tag != null)
             {
                 int hedefId = (int)btn.Tag;
-                double eklenecekTutar = 500; 
+                double eklenecekTutar = 500;
 
                 try
                 {
                     using (var baglanti = new SqliteConnection(DatabaseManager.BaglantiCumlesi))
                     {
                         baglanti.Open();
-                        
+
                         string hedefBaslik = "Hedef";
                         var cmdBilgi = baglanti.CreateCommand();
                         cmdBilgi.CommandText = "SELECT Baslik FROM Hedefler WHERE Id = @id";
@@ -925,7 +1013,7 @@ namespace BenimFinansim
             HedefEkleWindow pencere = new HedefEkleWindow();
             pencere.Owner = this;
             pencere.ShowDialog();
-            
+
             ButceVeHedefleriYukle();
             VerileriGuncelle();
         }
@@ -937,13 +1025,12 @@ namespace BenimFinansim
                 Microsoft.Win32.SaveFileDialog dialog = new Microsoft.Win32.SaveFileDialog();
                 dialog.FileName = $"finansim_yedek_{DateTime.Now:yyyyMMdd}.db";
                 dialog.Filter = "Veritabanı Dosyası (*.db)|*.db";
-                
+
                 if (dialog.ShowDialog() == true)
                 {
-                    // AppData içindeki gerçek veritabanı yolunu alıyoruz
                     string dbYolu = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "BenimFinansim", "finansim.db");
                     File.Copy(dbYolu, dialog.FileName, true);
-                    
+
                     MessageBox.Show("Mükemmel! Tüm finansal verilerinizin yedeği başarıyla alındı.", "Yedekleme Başarılı", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
@@ -962,15 +1049,14 @@ namespace BenimFinansim
                 {
                     Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
                     dialog.Filter = "Veritabanı Dosyası (*.db)|*.db";
-                    
+
                     if (dialog.ShowDialog() == true)
                     {
-                        // Yedeği AppData içindeki yola yapıştırıyoruz
                         string dbYolu = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "BenimFinansim", "finansim.db");
                         File.Copy(dialog.FileName, dbYolu, true);
-                        
+
                         MessageBox.Show("Yedek başarıyla yüklendi! Lütfen uygulamanın yeni verileri okuması için programı kapatıp tekrar açın.", "Geri Yükleme Başarılı", MessageBoxButton.OK, MessageBoxImage.Information);
-                        
+
                         VerileriGuncelle();
                         KategorileriYukle();
                     }
@@ -989,14 +1075,14 @@ namespace BenimFinansim
                 using (var baglanti = new SqliteConnection(DatabaseManager.BaglantiCumlesi))
                 {
                     baglanti.Open();
-                    
+
                     new SqliteCommand("CREATE TABLE IF NOT EXISTS Kategoriler (Id INTEGER PRIMARY KEY AUTOINCREMENT, Ad TEXT NOT NULL)", baglanti).ExecuteNonQuery();
 
                     long count = (long)new SqliteCommand("SELECT COUNT(*) FROM Kategoriler", baglanti).ExecuteScalar();
                     if (count == 0)
                     {
                         string[] varsayilanlar = { "Market & Gıda", "Fatura & Faturalar", "Eğlence", "Maaş", "Eğitim", "Sağlık", "Diğer" };
-                        foreach(var k in varsayilanlar)
+                        foreach (var k in varsayilanlar)
                         {
                             var cmd = baglanti.CreateCommand();
                             cmd.CommandText = "INSERT INTO Kategoriler (Ad) VALUES (@ad)";
@@ -1015,7 +1101,7 @@ namespace BenimFinansim
                             liste.Add(new KategoriModel { Id = reader.GetInt32(0), Ad = reader.GetString(1) });
                         }
                     }
-                    
+
                     if (lstKategorilerAyarlar != null) lstKategorilerAyarlar.ItemsSource = liste;
                 }
             }
@@ -1025,7 +1111,7 @@ namespace BenimFinansim
         private void BtnKategoriEkle_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtYeniKategori.Text)) return;
-            
+
             try
             {
                 using (var baglanti = new SqliteConnection(DatabaseManager.BaglantiCumlesi))
@@ -1036,9 +1122,9 @@ namespace BenimFinansim
                     cmd.Parameters.AddWithValue("@ad", txtYeniKategori.Text.Trim());
                     cmd.ExecuteNonQuery();
                 }
-                
-                txtYeniKategori.Text = ""; 
-                KategorileriYukle();       
+
+                txtYeniKategori.Text = "";
+                KategorileriYukle();
             }
             catch (Exception ex) { MessageBox.Show("Kategori eklenemedi: " + ex.Message); }
         }
@@ -1095,7 +1181,7 @@ namespace BenimFinansim
                             baglanti.Open();
                             var komut = baglanti.CreateCommand();
                             komut.CommandText = "SELECT Tarih, Baslik, Kategori, Tip, Miktar FROM Islemler ORDER BY Tarih DESC";
-                            
+
                             using (var reader = komut.ExecuteReader())
                             {
                                 while (reader.Read())
@@ -1103,7 +1189,7 @@ namespace BenimFinansim
                                     worksheet.Cell(satir, 1).Value = reader.GetString(0);
                                     worksheet.Cell(satir, 2).Value = reader.GetString(1);
                                     worksheet.Cell(satir, 3).Value = reader.GetString(2);
-                                    
+
                                     string tip = reader.GetString(3);
                                     worksheet.Cell(satir, 4).Value = tip;
                                     worksheet.Cell(satir, 5).Value = reader.GetDouble(4);
@@ -1131,7 +1217,6 @@ namespace BenimFinansim
             }
         }
 
-        // --- VARLIK (DÖVİZ/ALTIN) SIFIRLAMA İŞLEMİ ---
         private void BtnVarlikSil_Click(object sender, RoutedEventArgs e)
         {
             Button btn = (Button)sender;
@@ -1144,7 +1229,7 @@ namespace BenimFinansim
                 {
                     try
                     {
-                        using (var baglanti = new Microsoft.Data.Sqlite.SqliteConnection(DatabaseManager.BaglantiCumlesi))
+                        using (var baglanti = new SqliteConnection(DatabaseManager.BaglantiCumlesi))
                         {
                             baglanti.Open();
                             var komut = baglanti.CreateCommand();
@@ -1152,14 +1237,13 @@ namespace BenimFinansim
                             komut.Parameters.AddWithValue("@tur", silinecekTur);
                             komut.ExecuteNonQuery();
                         }
-                        
-                        // Ekrandaki verileri yenile
-                        VerileriGuncelle(); 
+
+                        VerileriGuncelle();
                         PortfoyYukle();
                     }
-                    catch (Exception ex) 
-                    { 
-                        MessageBox.Show("Silme işlemi sırasında hata oluştu: " + ex.Message); 
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Silme işlemi sırasında hata oluştu: " + ex.Message);
                     }
                 }
             }

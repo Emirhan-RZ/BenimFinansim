@@ -533,89 +533,101 @@
                     </Grid>
 
                     <Grid x:Name="pnlButce" Visibility="Collapsed" Margin="20">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
 
-                        <TextBlock Text="Bütçe ve Hedefler" FontSize="22" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,20"/>
+    <TextBlock Text="Bütçe ve Hedefler" FontSize="22" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,20"/>
 
-                        <Grid Grid.Row="1">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="20"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
+    <Grid Grid.Row="1">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="20"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
 
-                            <Border Grid.Column="0" Background="White" CornerRadius="15" Padding="25" BorderBrush="#E2E8F0" BorderThickness="1">
-                                <StackPanel>
-                                    <TextBlock Text="Aylık Kategori Bütçeleri" FontWeight="Bold" FontSize="16" Foreground="#1E293B" Margin="0,0,0,20"/>
+        <Border Grid.Column="0" Background="White" CornerRadius="15" Padding="25" BorderBrush="#E2E8F0" BorderThickness="1">
+            <StackPanel>
+                <TextBlock Text="Aylık Kategori Bütçeleri" FontWeight="Bold" FontSize="16" Foreground="#1E293B" Margin="0,0,0,20"/>
+                
+                <ItemsControl x:Name="lstButceler">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Margin="0,0,0,20">
+                                <Grid Margin="0,0,0,8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
                                     
-                                    <ItemsControl x:Name="lstButceler">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <StackPanel Margin="0,0,0,20">
-                                                    <Grid Margin="0,0,0,8">
-                                                        <TextBlock Text="{Binding Kategori}" FontWeight="SemiBold" Foreground="#334155"/>
-                                                        <TextBlock Text="{Binding LimitMetni}" HorizontalAlignment="Right" Foreground="{Binding YaziRenkBrush}" FontWeight="Bold"/>
-                                                    </Grid>
-                                                    <ProgressBar Value="{Binding Yuzde}" Height="10" Foreground="{Binding RenkBrush}" Background="#F1F5F9" BorderThickness="0">
-                                                        <ProgressBar.Resources>
-                                                            <Style TargetType="Border"><Setter Property="CornerRadius" Value="5"/></Style>
-                                                        </ProgressBar.Resources>
-                                                    </ProgressBar>
-                                                </StackPanel>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </StackPanel>
-                            </Border>
+                                    <TextBlock Grid.Column="0" Text="{Binding Kategori}" FontWeight="SemiBold" Foreground="#334155"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding LimitMetni}" Foreground="{Binding YaziRenkBrush}" FontWeight="Bold" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                    
+                                    <Button Grid.Column="2" Content="🗑️" Tag="{Binding Id}" Click="BtnButceSil_Click" Background="Transparent" BorderThickness="0" Foreground="#EF4444" Cursor="Hand" ToolTip="Bu bütçeyi kaldır"/>
+                                </Grid>
+                                <ProgressBar Value="{Binding Yuzde}" Height="10" Foreground="{Binding RenkBrush}" Background="#F1F5F9" BorderThickness="0">
+                                    <ProgressBar.Resources>
+                                        <Style TargetType="Border"><Setter Property="CornerRadius" Value="5"/></Style>
+                                    </ProgressBar.Resources>
+                                </ProgressBar>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </Border>
 
-                            <Border Grid.Column="2" Background="White" CornerRadius="15" Padding="25" BorderBrush="#E2E8F0" BorderThickness="1">
+        <Border Grid.Column="2" Background="White" CornerRadius="15" Padding="25" BorderBrush="#E2E8F0" BorderThickness="1">
+            <StackPanel>
+                <Grid Margin="0,0,0,20">
+                    <TextBlock Text="Aktif Hedefler &amp; Borçlar" FontWeight="Bold" FontSize="16" Foreground="#1E293B" VerticalAlignment="Center"/>
+                    <Button Content="+ Yeni Ekle" Click="YeniHedefEkle_Click" HorizontalAlignment="Right" Background="#10B981" Foreground="White" Padding="12,6" FontWeight="Bold" BorderThickness="0" Cursor="Hand">
+                        <Button.Resources>
+                            <Style TargetType="Border"><Setter Property="CornerRadius" Value="8"/></Style>
+                        </Button.Resources>
+                    </Button>
+                </Grid>
+                
+                <ItemsControl x:Name="lstHedefler">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="{Binding ArkaPlanBrush}" CornerRadius="12" Padding="15" Margin="0,0,0,15" BorderBrush="#E2E8F0" BorderThickness="1">
                                 <StackPanel>
-                                    <Grid Margin="0,0,0,20">
-                                        <TextBlock Text="Aktif Hedefler &amp; Borçlar" FontWeight="Bold" FontSize="16" Foreground="#1E293B" VerticalAlignment="Center"/>
-                                        <Button Content="+ Yeni Ekle" Click="YeniHedefEkle_Click" HorizontalAlignment="Right" Background="#10B981" Foreground="White" Padding="12,6" FontWeight="Bold" BorderThickness="0" Cursor="Hand">
-                                            <Button.Resources>
-                                                <Style TargetType="Border"><Setter Property="CornerRadius" Value="8"/></Style>
-                                            </Button.Resources>
-                                        </Button>
+                                    <Grid Margin="0,0,0,12">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding Ikon}" FontSize="18" Margin="0,0,10,0"/>
+                                            <TextBlock Text="{Binding Baslik}" FontWeight="Bold" Foreground="{Binding YaziRenkBrush}" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                        
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                            <TextBlock Text="{Binding YuzdeMetni}" FontWeight="Bold" Foreground="{Binding RenkBrush}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                            
+                                            <Button Content="+" Tag="{Binding Id}" Click="HedefParaEkle_Click" Width="26" Height="26" Background="{Binding RenkBrush}" Foreground="White" FontWeight="Bold" Cursor="Hand" BorderThickness="0" ToolTip="Hızlı Para Aktar" Margin="0,0,8,0">
+                                                <Button.Resources>
+                                                    <Style TargetType="Border"><Setter Property="CornerRadius" Value="13"/></Style>
+                                                </Button.Resources>
+                                            </Button>
+
+                                            <Button Content="🗑️" Tag="{Binding Id}" Click="BtnHedefSil_Click" Width="26" Height="26" Background="Transparent" Foreground="#EF4444" FontSize="14" Cursor="Hand" BorderThickness="0" ToolTip="Bu hedefi kalıcı olarak sil"/>
+                                        </StackPanel>
                                     </Grid>
-                                    
-                                    <ItemsControl x:Name="lstHedefler">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <Border Background="{Binding ArkaPlanBrush}" CornerRadius="12" Padding="15" Margin="0,0,0,15" BorderBrush="#E2E8F0" BorderThickness="1">
-                                                    <StackPanel>
-                                                        <Grid Margin="0,0,0,12">
-                                                            <StackPanel Orientation="Horizontal">
-                                                                <TextBlock Text="{Binding Ikon}" FontSize="18" Margin="0,0,10,0"/>
-                                                                <TextBlock Text="{Binding Baslik}" FontWeight="Bold" Foreground="{Binding YaziRenkBrush}" VerticalAlignment="Center"/>
-                                                            </StackPanel>
-                                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                                                <TextBlock Text="{Binding YuzdeMetni}" FontWeight="Bold" Foreground="{Binding RenkBrush}" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                                                                <Button Content="+" Tag="{Binding Id}" Click="HedefParaEkle_Click" Width="26" Height="26" Background="{Binding RenkBrush}" Foreground="White" FontWeight="Bold" Cursor="Hand" BorderThickness="0" ToolTip="Hızlı Para Aktar">
-                                                                    <Button.Resources>
-                                                                        <Style TargetType="Border"><Setter Property="CornerRadius" Value="13"/></Style>
-                                                                    </Button.Resources>
-                                                                </Button>
-                                                            </StackPanel>
-                                                        </Grid>
-                                                        <ProgressBar Value="{Binding Yuzde}" Height="8" Foreground="{Binding RenkBrush}" Background="#E2E8F0" BorderThickness="0" Margin="0,0,0,10">
-                                                            <ProgressBar.Resources>
-                                                                <Style TargetType="Border"><Setter Property="CornerRadius" Value="4"/></Style>
-                                                            </ProgressBar.Resources>
-                                                        </ProgressBar>
-                                                        <TextBlock Text="{Binding OzetMetni}" FontSize="12" FontWeight="SemiBold" Foreground="#64748B" HorizontalAlignment="Right"/>
-                                                    </StackPanel>
-                                                </Border>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
+                                    <ProgressBar Value="{Binding Yuzde}" Height="8" Foreground="{Binding RenkBrush}" Background="#E2E8F0" BorderThickness="0" Margin="0,0,0,10">
+                                        <ProgressBar.Resources>
+                                            <Style TargetType="Border"><Setter Property="CornerRadius" Value="4"/></Style>
+                                        </ProgressBar.Resources>
+                                    </ProgressBar>
+                                    <TextBlock Text="{Binding OzetMetni}" FontSize="12" FontWeight="SemiBold" Foreground="#64748B" HorizontalAlignment="Right"/>
                                 </StackPanel>
                             </Border>
-                        </Grid>
-                    </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Grid>
 
                     <Grid x:Name="pnlAyarlar" Visibility="Collapsed" Margin="20">
                         <StackPanel>
