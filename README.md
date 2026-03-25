@@ -4,6 +4,15 @@
 
 ---
 
+## 📥 Hemen İndirin ve Deneyin!
+
+Projeyi bilgisayarınıza kurup hemen kullanmaya başlamak için:
+1. Sağ taraftaki **[Releases](https://github.com/EmirhanGuclu/BenimFinansim/releases)** bölümüne gidin.
+2. En güncel sürümdeki **`BenimFinansim_Kurulum.exe`** dosyasını indirin.
+3. İndirdiğiniz dosyayı çalıştırın ve standart kurulum adımlarını takip edin.
+
+---
+
 ## ✨ Öne Çıkan Özellikler
 
 * 📊 **Dinamik Raporlama:** Harcamalarınızı kategorilere göre pasta grafikleriyle (LiveCharts) anlık olarak analiz edin.
@@ -20,33 +29,13 @@
 * **Veritabanı:** SQLite
 * **Grafik Motoru:** LiveCharts2
 * **Excel Kütüphanesi:** ClosedXML
+* **Setup Hazırlama:** Inno Setup Compiler
 * **UI Tasarımı:** Modern Flat UI Design
 
-## 🚀 Kurulum ve Çalıştırma
+## 🚀 Geliştiriciler İçin Çalıştırma
 
-1.  Bu depoyu klonlayın:
-    ```bash
-    git clone [https://github.com/kullanici_adin/BenimFinansim.git](https://github.com/kullanici_adin/BenimFinansim.git)
-    ```
-2.  Proje klasörüne gidin:
-    ```bash
-    cd BenimFinansim
-    ```
-3.  Gerekli paketleri geri yükleyin:
-    ```bash
-    dotnet restore
-    ```
-4.  Uygulamayı çalıştırın:
-    ```bash
-    dotnet run
-    ```
+Kodları incelemek veya projeyi kendi ortamınızda derlemek isterseniz:
 
----
-
-## 👨‍💻 Geliştirici
-**Emirhan Güçlü** *İstanbul Kent Üniversitesi - Bilgisayar Programcılığı*
-
----
-
-### 📝 Lisans
-Bu proje eğitim amaçlı geliştirilmiştir. İstediğiniz gibi inceleyebilir, geliştirebilir ve kullanabilirsiniz.
+1. Bu depoyu klonlayın:
+   ```bash
+   git clone [https://github.com/EmirhanGuclu/BenimFinansim.git](https://github.com/EmirhanGuclu/BenimFinansim.git)
