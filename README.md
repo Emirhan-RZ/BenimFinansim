@@ -10,6 +10,8 @@ Projeyi bilgisayarınıza kurup hemen kullanmaya başlamak için:
 1. Sağ taraftaki **[Releases](https://github.com/EmirhanGuclu/BenimFinansim/releases)** bölümüne gidin.
 2. En güncel sürümdeki **`BenimFinansim_Kurulum.exe`** dosyasını indirin.
 3. İndirdiğiniz dosyayı çalıştırın ve standart kurulum adımlarını takip edin.
+4. Önemli not!
+Uygulamayı indirdirdikten sonra database hatası alırsanız lütfen uygulamayı yönetici olarak çalıştırın.
 
 ---
 
