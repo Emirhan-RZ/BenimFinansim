@@ -612,102 +612,143 @@ namespace BenimFinansim
             }
         }
 
-        private void RaporlariYukle()
+      private void RaporlariYukle()
+{
+    if (cmbRaporDonem == null) return;
+
+    ComboBoxItem seciliItem = (ComboBoxItem)cmbRaporDonem.SelectedItem;
+    if (seciliItem == null) return;
+
+    string secilenDonem = seciliItem.Content?.ToString() ?? "Bu Ay";
+
+    DateTime simdi = DateTime.Now;
+    DateTime baslangic;
+    DateTime bitis;
+
+    // Dönem hesaplama
+    if (secilenDonem == "Bu Ay")
+    {
+        baslangic = new DateTime(simdi.Year, simdi.Month, 1);
+        bitis = new DateTime(simdi.Year, simdi.Month, DateTime.DaysInMonth(simdi.Year, simdi.Month));
+    }
+    else if (secilenDonem == "Geçen Ay")
+    {
+        DateTime gecenAy = simdi.AddMonths(-1);
+        baslangic = new DateTime(gecenAy.Year, gecenAy.Month, 1);
+        bitis = new DateTime(gecenAy.Year, gecenAy.Month, DateTime.DaysInMonth(gecenAy.Year, gecenAy.Month));
+    }
+    else if (secilenDonem == "Bu Yıl")
+    {
+        baslangic = new DateTime(simdi.Year, 1, 1);
+        bitis = new DateTime(simdi.Year, 12, 31);
+    }
+    else // Tüm Zamanlar
+    {
+        baslangic = new DateTime(1900, 1, 1);
+        bitis = new DateTime(2100, 12, 31);
+    }
+
+    try
+    {
+        using (var baglanti = new Microsoft.Data.Sqlite.SqliteConnection(DatabaseManager.BaglantiCumlesi))
         {
-            if (cmbRaporDonem == null || lstRaporKategori == null) return;
-            ComboBoxItem seciliItem = (ComboBoxItem)cmbRaporDonem.SelectedItem;
-            if (seciliItem == null) return;
+            baglanti.Open();
 
-            string secilenDonem = seciliItem.Content?.ToString() ?? "Bu Ay";
+            // ---------------------------------------------
+            // 1. GİDERLERİ ÇEK VE HESAPLA
+            // ---------------------------------------------
+            var komutGider = baglanti.CreateCommand();
+            komutGider.CommandText = @"
+                SELECT Kategori, SUM(Miktar) 
+                FROM Islemler 
+                WHERE Tip = 'Gider' 
+                AND DATE(Tarih) BETWEEN DATE(@bas) AND DATE(@bit)
+                GROUP BY Kategori 
+                ORDER BY SUM(Miktar) DESC";
 
-            DateTime simdi = DateTime.Now;
-            string baslangicTarihi = "";
-            string bitisTarihi = "";
+            komutGider.Parameters.AddWithValue("@bas", baslangic.ToString("yyyy-MM-dd"));
+            komutGider.Parameters.AddWithValue("@bit", bitis.ToString("yyyy-MM-dd"));
 
-            if (secilenDonem == "Bu Ay")
-            {
-                baslangicTarihi = new DateTime(simdi.Year, simdi.Month, 1).ToString("dd.MM.yyyy");
-                bitisTarihi = new DateTime(simdi.Year, simdi.Month, DateTime.DaysInMonth(simdi.Year, simdi.Month)).ToString("dd.MM.yyyy");
-            }
-            else if (secilenDonem == "Geçen Ay")
-            {
-                DateTime gecenAy = simdi.AddMonths(-1);
-                baslangicTarihi = new DateTime(gecenAy.Year, gecenAy.Month, 1).ToString("dd.MM.yyyy");
-                bitisTarihi = new DateTime(gecenAy.Year, gecenAy.Month, DateTime.DaysInMonth(gecenAy.Year, gecenAy.Month)).ToString("dd.MM.yyyy");
-            }
-            else // Bu Yıl
-            {
-                baslangicTarihi = "01.01." + simdi.Year;
-                bitisTarihi = "31.12." + simdi.Year;
-            }
+            var giderListesi = new List<KategoriRaporModel>();
+            string[] giderRenkler = { "#EF4444", "#F97316", "#F59E0B", "#EAB308", "#8B5CF6", "#EC4899", "#F43F5E" };
+            int gIndex = 0;
+            double toplamGider = 0;
 
-            try
+            using (var okuyucu = komutGider.ExecuteReader())
             {
-                using (var baglanti = new SqliteConnection(DatabaseManager.BaglantiCumlesi))
+                while (okuyucu.Read())
                 {
-                    baglanti.Open();
-                    var komut = baglanti.CreateCommand();
+                    string kategoriAdi = okuyucu.GetString(0);
+                    double miktar = Math.Abs(okuyucu.GetDouble(1));
+                    toplamGider += miktar;
 
-                    komut.CommandText = @"SELECT Kategori, SUM(Miktar) 
-                                         FROM Islemler 
-                                         WHERE Tip = 'Gider' 
-                                         AND Tarih BETWEEN @bas AND @bit 
-                                         GROUP BY Kategori 
-                                         ORDER BY SUM(Miktar) DESC";
-
-                    komut.Parameters.AddWithValue("@bas", baslangicTarihi);
-                    komut.Parameters.AddWithValue("@bit", bitisTarihi);
-
-                    var kategoriListesi = new List<KategoriRaporModel>();
-                    string[] renkler = { "#3B82F6", "#EF4444", "#F59E0B", "#10B981", "#8B5CF6", "#EC4899", "#14B8A6" };
-                    int renkIndex = 0;
-
-                    RaporSerisi.Clear();
-
-                    using (var okuyucu = komut.ExecuteReader())
+                    string hexRenk = giderRenkler[gIndex % giderRenkler.Length];
+                    giderListesi.Add(new KategoriRaporModel
                     {
-                        while (okuyucu.Read())
-                        {
-                            string kategoriAdi = okuyucu.GetString(0);
-                            double miktar = Math.Abs(okuyucu.GetDouble(1));
-
-                            string hexRenk = renkler[renkIndex % renkler.Length];
-                            var firca = new SolidColorBrush((Color)ColorConverter.ConvertFromString(hexRenk));
-
-                            kategoriListesi.Add(new KategoriRaporModel
-                            {
-                                KategoriAdi = kategoriAdi,
-                                Tutar = miktar,
-                                TutarMetni = $"-₺{miktar:N2}",
-                                RenkBrush = firca
-                            });
-
-                            RaporSerisi.Add(new PieSeries<double>
-                            {
-                                Values = new double[] { miktar },
-                                Name = kategoriAdi,
-                                Fill = new SolidColorPaint(SKColor.Parse(hexRenk)),
-                                InnerRadius = 50,
-                                Pushout = 3,
-                                HoverPushout = 10
-                            });
-                            renkIndex++;
-                        }
-                    }
-
-                    if (txtRaporVeriYok != null)
-                        txtRaporVeriYok.Visibility = (RaporSerisi.Count == 0) ? Visibility.Visible : Visibility.Collapsed;
-
-                    if (RaporSerisi.Count == 0)
-                    {
-                        RaporSerisi.Add(new PieSeries<double> { Values = new double[] { 1 }, Fill = new SolidColorPaint(SKColor.Parse("#F1F5F9")), InnerRadius = 50, HoverPushout = 0 });
-                    }
-
-                    lstRaporKategori.ItemsSource = kategoriListesi;
+                        KategoriAdi = kategoriAdi,
+                        Tutar = miktar,
+                        TutarMetni = $"-₺{miktar:N2}",
+                        RenkBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(hexRenk))
+                    });
+                    gIndex++;
                 }
             }
-            catch (Exception ex) { MessageBox.Show("Hata: " + ex.Message); }
+
+            // ---------------------------------------------
+            // 2. GELİRLERİ ÇEK VE HESAPLA
+            // ---------------------------------------------
+            var komutGelir = baglanti.CreateCommand();
+            komutGelir.CommandText = @"
+                SELECT Kategori, SUM(Miktar) 
+                FROM Islemler 
+                WHERE Tip = 'Gelir' 
+                AND DATE(Tarih) BETWEEN DATE(@bas) AND DATE(@bit)
+                GROUP BY Kategori 
+                ORDER BY SUM(Miktar) DESC";
+
+            komutGelir.Parameters.AddWithValue("@bas", baslangic.ToString("yyyy-MM-dd"));
+            komutGelir.Parameters.AddWithValue("@bit", bitis.ToString("yyyy-MM-dd"));
+
+            var gelirListesi = new List<KategoriRaporModel>();
+            string[] gelirRenkler = { "#10B981", "#059669", "#047857", "#34D399", "#6EE7B7", "#14B8A6", "#0D9488" };
+            int geIndex = 0;
+            double toplamGelir = 0;
+
+            using (var okuyucu = komutGelir.ExecuteReader())
+            {
+                while (okuyucu.Read())
+                {
+                    string kategoriAdi = okuyucu.GetString(0);
+                    double miktar = Math.Abs(okuyucu.GetDouble(1));
+                    toplamGelir += miktar;
+
+                    string hexRenk = gelirRenkler[geIndex % gelirRenkler.Length];
+                    gelirListesi.Add(new KategoriRaporModel
+                    {
+                        KategoriAdi = kategoriAdi,
+                        Tutar = miktar,
+                        TutarMetni = $"+₺{miktar:N2}",
+                        RenkBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(hexRenk))
+                    });
+                    geIndex++;
+                }
+            }
+
+            // ---------------------------------------------
+            // 3. EKRANA (XAML) VERİLERİ GÖNDER
+            // ---------------------------------------------
+            if (lstRaporGider != null) lstRaporGider.ItemsSource = giderListesi;
+            if (lstRaporGelir != null) lstRaporGelir.ItemsSource = gelirListesi;
+
+            if (txtToplamRaporGider != null) txtToplamRaporGider.Text = $"-₺{toplamGider:N2}";
+            if (txtToplamRaporGelir != null) txtToplamRaporGelir.Text = $"+₺{toplamGelir:N2}";
         }
+    }
+    catch (Exception ex)
+    {
+        MessageBox.Show("Hata: " + ex.Message);
+    }
+}
 
         private void cmbRaporDonem_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {

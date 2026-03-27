@@ -35,7 +35,7 @@ ArchitecturesInstallIn64BitMode=x64compatible
 ChangesAssociations=yes
 DisableProgramGroupPage=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only).
-;PrivilegesRequired=lowest
+PrivilegesRequired=lowest
 OutputDir=D:\masaüstü
 OutputBaseFilename=BenimFinansim_Kurulum
 SolidCompression=yes
@@ -50,7 +50,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 ; İŞTE DÜZELTİLEN SATIR BURASI (win-x64 kısmı kaldırıldı):
-Source: "D:\c proje\BenimFinansim\bin\Release\net8.0-windows\publish\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "D:\c proje\BenimFinansim\bin\Release\net8.0-windows\win-x64\publish\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 Source: "D:\c proje\BenimFinansim\finans.ico"; DestDir: "{app}"; Flags: ignoreversion
 
