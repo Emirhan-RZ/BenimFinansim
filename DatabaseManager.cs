@@ -95,6 +95,34 @@ namespace BenimFinansim
                     )";
                 komut.ExecuteNonQuery();
 
+                // F. KATEGORİLER TABLOSU
+                komut.CommandText = @"
+                    CREATE TABLE IF NOT EXISTS Kategoriler (
+                        Id INTEGER PRIMARY KEY AUTOINCREMENT, 
+                        Ad TEXT NOT NULL
+                    )";
+                komut.ExecuteNonQuery();
+
+                // Tablonun içi boş mu diye kontrol ediyoruz (Yeni kurulum kontrolü)
+                komut.CommandText = "SELECT COUNT(*) FROM Kategoriler";
+                long kategoriSayisi = (long)komut.ExecuteScalar();
+
+                // Eğer tablo boşsa varsayılan kategorileri ekle
+                if (kategoriSayisi == 0)
+                {
+                    komut.CommandText = @"
+                        INSERT INTO Kategoriler (Ad) VALUES ('Maaş');
+                        INSERT INTO Kategoriler (Ad) VALUES ('Market');
+                        INSERT INTO Kategoriler (Ad) VALUES ('Fatura');
+                        INSERT INTO Kategoriler (Ad) VALUES ('Ulaşım');
+                        INSERT INTO Kategoriler (Ad) VALUES ('Eğlence');
+                        INSERT INTO Kategoriler (Ad) VALUES ('Sağlık');
+                        INSERT INTO Kategoriler (Ad) VALUES ('Eğitim');
+                        INSERT INTO Kategoriler (Ad) VALUES ('Diğer');
+                    ";
+                    komut.ExecuteNonQuery();
+                }
+
                 // --- SÜTUN GÜNCELLEMELERİ (ALTER TABLE) ---
 
                 // VARLIKLAR TABLOSUNA "AlisFiyati" SÜTUNUNU EKLE
