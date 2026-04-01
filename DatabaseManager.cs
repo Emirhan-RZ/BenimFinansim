@@ -30,10 +30,12 @@ namespace BenimFinansim
 
         // 3. Uygulama ilk açıldığında tabloları kuracak olan metod
         public static void VeritabaniniKur()
-        {
-            // Bağlantıyı yeni güvenli AppData yoluna göre açıyoruz
-            using (var baglanti = new SqliteConnection(BaglantiCumlesi))
-            {
+{
+    // Yol zaten GetDbPath içinde klasör oluşturuyor, burası tamam.
+    string dbPath = GetDbPath(); 
+
+    using (var baglanti = new SqliteConnection(BaglantiCumlesi))
+    {
                 baglanti.Open();
                 var komut = baglanti.CreateCommand();
 

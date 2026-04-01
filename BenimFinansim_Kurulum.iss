@@ -3,11 +3,11 @@
 ; Non-commercial use only
 
 #define MyAppName "Benim Finansım"
-#define MyAppVersion "1.0.1"
+#define MyAppVersion "1.0.2"
 #define MyAppPublisher "Emirhan Güçlü"
 #define MyAppURL "https://github.com/Emirhan-RZ/BenimFinansim"
 #define MyAppExeName "BenimFinansim.exe"
-#define MyAppAssocName "BenimFinansim_Kurulum"
+#define MyAppAssocName "BenimFinansim_setup"
 #define MyAppAssocExt ".myp"
 #define MyAppAssocKey StringChange(MyAppAssocName, " ", "") + MyAppAssocExt
 
@@ -49,10 +49,10 @@ Name: "turkish"; MessagesFile: "compiler:Languages\Turkish.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-; İŞTE DÜZELTİLEN SATIR BURASI (win-x64 kısmı kaldırıldı):
+; Publish klasöründeki her şeyi (artık .NET dosyaları da orada) kurulum paketine dahil ediyoruz
 Source: "D:\c proje\BenimFinansim\bin\Release\net8.0-windows\win-x64\publish\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 Source: "D:\c proje\BenimFinansim\finans.ico"; DestDir: "{app}"; Flags: ignoreversion
+
 
 [Registry]
 Root: HKA; Subkey: "Software\Classes\{#MyAppAssocExt}\OpenWithProgids"; ValueType: string; ValueName: "{#MyAppAssocKey}"; ValueData: ""; Flags: uninsdeletevalue
