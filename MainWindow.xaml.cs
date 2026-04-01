@@ -89,11 +89,23 @@ namespace BenimFinansim
             PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(name));
         }
 
-        public MainWindow()
+       public MainWindow()
         {
+            // 1. Önce pencere çizilsin (Mutfak kapıları açılsın)
             InitializeComponent();
-            DatabaseManager.VeritabaniniKur();
-            VerileriGuncelle();
+            
+            // 2. Pencere DataBinding işlemleri için kendini hazırlasın
+            DataContext = this;
+            
+            // 3. Her şey hazır olduktan sonra verileri çek (Yemekleri servis et)
+            try 
+            {
+                VerileriGuncelle();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Veriler yüklenirken bir hata oluştu: " + ex.Message, "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private double DbDenDegerGetir(SqliteConnection baglanti, string sqlSorgusu)

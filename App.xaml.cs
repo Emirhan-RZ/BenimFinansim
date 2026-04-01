@@ -14,18 +14,22 @@ public partial class App : Application
         // 1. ÖNCE: Uygulama genelinde bir hata olursa yakalaması için bu satırı ekliyoruz
         DispatcherUnhandledException += App_DispatcherUnhandledException;
 
+        // Windows'un arka plan hazırlıklarını yapmasına izin veriyoruz
+        base.OnStartup(e);
+
         try
         {
-            // 2. KRİTİK ADIM: Uygulama daha açılmadan veritabanını kuruyoruz.
-            // Bu sayede MainWindow açıldığında tablolar çoktan hazır olmuş oluyor.
+            // 2. KRİTİK ADIM: Uygulama arayüzü çizilmeden önce veritabanını kuruyoruz.
             DatabaseManager.VeritabaniniKur();
+
+            // 3. ZAFER ANI: Tablolarımız hazır olduğuna göre artık pencereyi güvenle açabiliriz!
+            MainWindow anaPencere = new MainWindow();
+            anaPencere.Show();
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Veritabanı başlatılırken hata oluştu: {ex.Message}", "Kritik Hata", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show($"Sistem başlatılırken hata oluştu: {ex.Message}", "Kritik Hata", MessageBoxButton.OK, MessageBoxImage.Error);
         }
-
-        base.OnStartup(e);
     }
 
     private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
@@ -34,7 +38,7 @@ public partial class App : Application
         // sessizce kapanmak yerine bize ne olduğunu söylesin.
         MessageBox.Show($"Beklenmedik bir hata oluştu:\n\n{e.Exception.Message}", "Uygulama Hatası", MessageBoxButton.OK, MessageBoxImage.Warning);
         
-        // Hatanın uygulamayı tamamen çökertmesini engellemek için (isteğe bağlı)
+        // Hatanın uygulamayı tamamen çökertmesini engellemek için
         e.Handled = true; 
     }
 }
